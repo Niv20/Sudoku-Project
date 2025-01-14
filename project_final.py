@@ -3,56 +3,6 @@ NOT_FINISH = 0
 FINISH_SUCCESS = 1
 HORIZONTAL_LEN = 28
 
-example_board = [[5, 3, -1, -1, 7, -1, -1, -1, -1],
-                 [6, -1, -1, -1, -1, -1, 1, -1, -1],
-                 [-1, -1, 9, -1, -1, -1, -1, 6, -1],
-                 [-1, -1, -1, -1, 6, -1, -1, -1, 3],
-                 [-1, -1, -1, 8, -1, 3, -1, -1, 1],
-                 [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                 [-1, 6, -1, -1, -1, -1, -1, -1, -1],
-                 [-1, -1, -1, -1, 1, -1, -1, -1, -1],
-                 [-1, -1, -1, -1, 8, -1, -1, -1, 9]]
-
-perfect_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
-                 [6, 7, 2, 1, 9, 5, 3, 4, 8],
-                 [1, 9, 8, 3, 4, 2, 5, 6, 7],
-                 [8, 5, 9, 7, 6, 1, 4, 2, 3],
-                 [4, 2, 6, 8, 5, 3, 7, 9, 1],
-                 [7, 1, 3, 9, 2, 4, 8, 5, 6],
-                 [9, 6, 1, 5, 3, 7, 2, 8, 4],
-                 [2, 8, 7, 4, 1, 9, 6, 3, 5],
-                 [3, 4, 5, 2, 8, 6, 1, 7, 9]]
-
-impossible_board = [[5, 1, 6, 8, 4, 9, 7, 3, 2],
-                    [3, -1, 7, 6, -1, 5, -1, -1, -1],
-                    [8, -1, 9, 7, -1, -1, -1, 6, 5],
-                    [1, 3, 5, -1, 6, -1, 9, -1, 7],
-                    [4, 7, 2, 5, 9, 1, -1, -1, 6],
-                    [9, 6, 8, 3, 7, -1, -1, 5, -1],
-                    [2, 5, 3, 1, 8, 6, -1, 7, 4],
-                    [6, 8, 4, 2, -1, 7, 5, -1, -1],
-                    [7, 9, 1, -1, 5, -1, 6, -1, 8]]
-
-bug_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
-             [6, 7, 2, 1, 9, 5, 3, 4, 9],
-             [1, 9, 8, 3, 4, 2, 5, 6, 7],
-             [8, 5, 9, 7, 6, 1, 4, 2, 3],
-             [4, 2, 6, 8, 5, 3, 7, 9, 1],
-             [7, 1, 3, 9, 2, 4, 8, 5, 6],
-             [9, 6, 1, 5, 3, 7, 2, 8, 4],
-             [2, 8, 7, 4, 1, 9, 6, 3, 5],
-             [3, 4, 5, 2, 8, 6, 1, 7, 9]]
-
-interesting_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
-                     [6, 7, 2, 1, 9, 5, 3, 4, 8],
-                     [1, 9, 8, 3, 4, 2, 5, 6, 7],
-                     [-1, -1, -1, 7, 6, 1, 4, 2, 3],
-                     [-1, -1, -1, 8, 5, 3, 7, 9, 1],
-                     [-1, -1, -1, 9, 2, 4, 8, 5, 6],
-                     [-1, -1, -1, -1, 3, 7, 2, 8, 4],
-                     [-1, -1, -1, -1, 1, 9, 6, 3, 5],
-                     [-1, -1, -1, -1, 8, 6, 1, 7, 9]]
-
 board1 = [[5, -1, 4, -1, 7, -1, -1, 1, -1],
           [6, -1, 2, 1, -1, -1, 3, -1, -1],
           [1, -1, 8, -1, 4, -1, -1, 6, -1],
@@ -282,7 +232,7 @@ def fill_cells_with_single_option(sudoku_board: list, possibilities: list) -> li
 This function checks whether the Sudoku board is fully solved.
 It determines if all cells in the `possibilities` list are empty, 
 indicating that no further possibilities are available, meaning the board is complete.
-WARNING: The function assumes that the borad is legal!
+>> WARNING: The function assumes that the borad is legal! <<
 '''
 
 
@@ -511,3 +461,90 @@ def print_board(sudoku_board: list) -> None:
 
 def print_board_to_file(sudoku_board, file_name):
     pass
+
+
+'''
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                           MAIN                           ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+'''
+example_board = [[5, 3, -1, -1, 7, -1, -1, -1, -1],
+                 [6, -1, -1, -1, -1, -1, 1, -1, -1],
+                 [-1, -1, 9, -1, -1, -1, -1, 6, -1],
+                 [-1, -1, -1, -1, 6, -1, -1, -1, 3],
+                 [-1, -1, -1, 8, -1, 3, -1, -1, 1],
+                 [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                 [-1, 6, -1, -1, -1, -1, -1, -1, -1],
+                 [-1, -1, -1, -1, 1, -1, -1, -1, -1],
+                 [-1, -1, -1, -1, 8, -1, -1, -1, 9]]
+
+perfect_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
+                 [6, 7, 2, 1, 9, 5, 3, 4, 8],
+                 [1, 9, 8, 3, 4, 2, 5, 6, 7],
+                 [8, 5, 9, 7, 6, 1, 4, 2, 3],
+                 [4, 2, 6, 8, 5, 3, 7, 9, 1],
+                 [7, 1, 3, 9, 2, 4, 8, 5, 6],
+                 [9, 6, 1, 5, 3, 7, 2, 8, 4],
+                 [2, 8, 7, 4, 1, 9, 6, 3, 5],
+                 [3, 4, 5, 2, 8, 6, 1, 7, 9]]
+
+impossible_board = [[5, 1, 6, 8, 4, 9, 7, 3, 2],
+                    [3, -1, 7, 6, -1, 5, -1, -1, -1],
+                    [8, -1, 9, 7, -1, -1, -1, 6, 5],
+                    [1, 3, 5, -1, 6, -1, 9, -1, 7],
+                    [4, 7, 2, 5, 9, 1, -1, -1, 6],
+                    [9, 6, 8, 3, 7, -1, -1, 5, -1],
+                    [2, 5, 3, 1, 8, 6, -1, 7, 4],
+                    [6, 8, 4, 2, -1, 7, 5, -1, -1],
+                    [7, 9, 1, -1, 5, -1, 6, -1, 8]]
+
+bug_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
+             [6, 7, 2, 1, 9, 5, 3, 4, 9],
+             [1, 9, 8, 3, 4, 2, 5, 6, 7],
+             [8, 5, 9, 7, 6, 1, 4, 2, 3],
+             [4, 2, 6, 8, 5, 3, 7, 9, 1],
+             [7, 1, 3, 9, 2, 4, 8, 5, 6],
+             [9, 6, 1, 5, 3, 7, 2, 8, 4],
+             [2, 8, 7, 4, 1, 9, 6, 3, 5],
+             [3, 4, 5, 2, 8, 6, 1, 7, 9]]
+
+interesting_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
+                     [6, 7, 2, 1, 9, 5, 3, 4, 8],
+                     [1, 9, 8, 3, 4, 2, 5, 6, 7],
+                     [-1, -1, -1, 7, 6, 1, 4, 2, 3],
+                     [-1, -1, -1, 8, 5, 3, 7, 9, 1],
+                     [-1, -1, -1, 9, 2, 4, 8, 5, 6],
+                     [-1, -1, -1, -1, 3, 7, 2, 8, 4],
+                     [-1, -1, -1, -1, 1, 9, 6, 3, 5],
+                     [-1, -1, -1, -1, 8, 6, 1, 7, 9]]
+
+random_board = create_random_board()
+
+'''
+This function checks if the Sudoku board has a valid basic structure.  
+The board should have 9 rows, each containing 9 integer (between -1 and 9).
+The function will return true or false depending on the validity check.
+>> WARNING: This is only a basic format check! <<
+For full validation of Sudoku rules, we will use "is_legal_board" function.  
+'''
+
+
+def basic_sudoku_structure_check(sudoku_board: list) -> bool:
+    # Check if the list contains 9 sub-lists
+    if len(sudoku_board) != 9:
+        return False
+
+    # Check if each of the 9 sub-lists contains 9 values
+    for row in range(9):
+        if len(sudoku_board[row]) != 9:
+            return False
+
+    # Check if each value is a number between -1 and 9
+    for row in range(9):
+        for col in range(9):
+            cell_value = str(sudoku_board[row][col])
+            if not cell_value.isdigit() and cell_value != "-1":
+                return False
+
+    # If you get here, that means the board structure is valid
+    return True
