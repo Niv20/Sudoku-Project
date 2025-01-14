@@ -1,3 +1,5 @@
+import random
+
 FINISH_FAILURE = -1
 NOT_FINISH = 0
 FINISH_SUCCESS = 1
@@ -402,8 +404,8 @@ def fill_board(sudoku_board: list, possibilities: list):
         possibilities = possible_digits(sudoku_board)
 
 
-print(fill_board(board2, possible_digits(board2)))
-
+# print(fill_board(board2, possible_digits(board2)))
+# Maor to do -> לא לסמוך על המשתמש מבחינת קלט
 '''
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃                        Section 5                         ┃
@@ -411,8 +413,24 @@ print(fill_board(board2, possible_digits(board2)))
 '''
 
 
-def create_random_board(sudoku_board: list):
-    pass
+def create_random_board(sudoku_board: list) -> None:
+    num_random_cells = random.randrange(10, 21)
+
+    all_cells_options = []
+    for i in range(9):
+        for j in range(9):
+            all_cells_options.append((i,j))
+
+
+    for i in range(num_random_cells):
+        k = random.randrange(0,len(all_cells_options))
+        row , col  = all_cells_options[k]
+        list_option = options(sudoku_board,(row,col))
+        random_val = list_option[random.randrange(0, len(list_option))]
+        sudoku_board[row][col] = random_val
+        all_cells_options.pop(k)
+
+
 
 
 '''
@@ -518,7 +536,6 @@ interesting_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
                      [-1, -1, -1, -1, 1, 9, 6, 3, 5],
                      [-1, -1, -1, -1, 8, 6, 1, 7, 9]]
 
-random_board = create_random_board()
 
 '''
 This function checks if the Sudoku board has a valid basic structure.  
@@ -548,3 +565,10 @@ def basic_sudoku_structure_check(sudoku_board: list) -> bool:
 
     # If you get here, that means the board structure is valid
     return True
+
+empty_list = []
+for i in range(9):
+    empty_list.append([-1]*9)
+
+create_random_board(empty_list)
+print_board(empty_list)
