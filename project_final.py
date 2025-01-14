@@ -1,5 +1,5 @@
 import random
-
+# ד
 FINISH_FAILURE = -1
 NOT_FINISH = 0
 FINISH_SUCCESS = 1
