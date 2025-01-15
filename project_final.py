@@ -348,7 +348,7 @@ def ask_for_input(options_to_choose_from: list) -> int:
 
     while True:
         if not user_choice in options_to_choose_from:
-            user_choice = int(input("Please enter a number from the list"))
+            user_choice = int(input("Please enter a number from the list: "))
         else:
             break
 
