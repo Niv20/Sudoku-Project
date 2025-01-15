@@ -346,20 +346,11 @@ Once a valid input is received, the function returns the entered number.
 def ask_for_input(options_to_choose_from: list) -> int:
     user_choice = int(input())
 
-    '''
-    ┌──────────────────────────────────────────────────┐
-    │██████████████████████████████████████████████████│
-    │██████████████████████████████████████████████████│
-    │███████████████This is Maor's task████████████████│
-    │██████████████████████████████████████████████████│
-    │██████████████████████████████████████████████████│
-    │██████████████████████████████████████████████████│
-    └──────────────────────────────────────────────────┘
-
-    צריך לוודא שהקלט שהמתמש מכניס הוא בכלל נמצא ברשימת האפשרויות
-    כל עוד הוא מזין שטויות, לבקש ממנו שוב ושוב להזין
-    כדאי גם להדפיס הודעת שגיאה מתאימה (יעני, תקליד שוב)
-    '''
+    while True:
+        if not user_choice in options_to_choose_from:
+            user_choice = int(input("Please enter a number from the list"))
+        else:
+            break
 
     return user_choice
 
@@ -396,7 +387,7 @@ def fill_board(sudoku_board: list, possibilities: list):
         # Display the available options for the user to choose from
         print_the_potions(options_to_choose_from, x, y)
 
-        # And ask the user to choose a number from the list of options
+        # And ask the user to choose a number from the list of options , ask for input it is for make sure that the number from the user is valid
         user_choice = ask_for_input(options_to_choose_from)
 
         # Update the Sudoku and possibilities bord the with the chosen number
