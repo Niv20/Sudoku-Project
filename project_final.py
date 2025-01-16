@@ -179,13 +179,7 @@ if any duplicates are found and True otherwise.
 '''
 
 
-def is_legal_board(sudoku_board: list, possibilities: list) -> bool:
-    # Check if there is "None" in possibilities borad
-    for row in range(9):
-        for col in range(9):
-            if possibilities[row][col] == None:
-                return False
-
+def is_legal_board(sudoku_board: list) -> bool:
     # Check for duplicates in each row
     for row in range(9):
         if are_there_duplicates(num_in_row(sudoku_board, row)):
@@ -203,6 +197,24 @@ def is_legal_board(sudoku_board: list, possibilities: list) -> bool:
                 return False
 
     # If we got here, that means no duplicates appeared in the board
+    return True
+
+
+'''
+This function checks whether a given possibilities board is legal or not.
+A possibilities board is considered illegal if he contian any "None" values.
+The function returns False if "None" is found and True otherwise.
+'''
+
+
+def is_legal_possibilities(possibilities: list) -> bool:
+    # Check if there is "None" in possibilities borad
+    for row in range(9):
+        for col in range(9):
+            if possibilities[row][col] == None:
+                return False
+
+    # If we got here, that means all cells in the board different from None
     return True
 
 
@@ -297,8 +309,8 @@ def one_stage(sudoku_board: list, possibilities: list) -> tuple:
     # 1. Fill cells with a single possible value and update possibilities
     possibilities = fill_cells_with_single_option(sudoku_board, possibilities)
 
-    # 2. Check if the board is legal
-    if not is_legal_board(sudoku_board, possibilities):
+    # 2. Check if the sudoku board and the possibilities borad are legal
+    if not is_legal_board(sudoku_board) or not is_legal_possibilities(possibilities):
         return FINISH_FAILURE, (-1, -1)
 
     # 3a. Check if the board is fully solved
@@ -326,7 +338,7 @@ def print_the_potions(options_to_choose_from: list, x: int, y: int) -> None:
     # Print a message asking the user to choose a number
     print("-" * HORIZONTAL_LEN)
     print("For the cell at (", x, ",", y, ")", sep="")
-    print("choose a number: ", end="")
+    print("choose a number from the following list: ", end="")
 
     # Loop through the sorted options and print them
     for i in range(len(options_to_choose_from)):
@@ -337,21 +349,28 @@ def print_the_potions(options_to_choose_from: list, x: int, y: int) -> None:
 
 
 '''
-This function repeatedly ask the user for input until a valid number is entered. 
-A valid number is one that is found in the provided list of options. 
-Once a valid input is received, the function returns the entered number.
+This function asks the user for a number from a given list of options.  
+It keeps prompting until the user enters a valid number from the list.  
+The function also handles invalid inputs, like letters or symbols, without crashing.
 '''
 
 
 def ask_for_input(options_to_choose_from: list) -> int:
-    user_choice = int(input())
-
     while True:
-        if not user_choice in options_to_choose_from:
-            user_choice = int(input("Please enter a number from the list: "))
-        else:
-            break
+        try:
+            # Ask for user input
+            user_choice = int(input())
 
+            # Check if the input is in the list of options
+            if user_choice in options_to_choose_from:
+                break
+            else:
+                print("Sorry, the number isn't from the list above. Let's try again.")
+        except:
+            # Handle invalid inputs (like letters or symbols)
+            print("Hi! This is invalid input. You need to enter a **number**!")
+
+    # If we get here, that means the user entered a valid number from the list
     return user_choice
 
 
@@ -395,33 +414,46 @@ def fill_board(sudoku_board: list, possibilities: list):
         possibilities = possible_digits(sudoku_board)
 
 
-# print(fill_board(board2, possible_digits(board2)))
-# Maor to do -> לא לסמוך על המשתמש מבחינת קלט
 '''
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃                        Section 5                         ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 '''
 
+'''
+This function fills a Sudoku board with random values.  
+It randomly picks between 10 and 20 cells and gives each one a valid number  
+that fits the Sudoku rules. The function changes the board directly.
+'''
+
 
 def create_random_board(sudoku_board: list) -> None:
+    # Determine a random number of cells to fill (between 10 and 20)
     num_random_cells = random.randrange(10, 21)
 
+    # Create a list of all cell coordinates in the board
     all_cells_options = []
     for i in range(9):
         for j in range(9):
-            all_cells_options.append((i,j))
+            all_cells_options.append((i, j))
 
-
+    # Fill the randomly chosen cells
     for i in range(num_random_cells):
-        k = random.randrange(0,len(all_cells_options))
-        row , col  = all_cells_options[k]
-        list_option = options(sudoku_board,(row,col))
+        # Choose a random cell from the available options
+        k = random.randrange(0, len(all_cells_options))
+        row, col = all_cells_options[k]
+
+        # Get the list of valid options for the chosen cell
+        list_option = options(sudoku_board, (row, col))
+
+        # Select a random value from the valid options
         random_val = list_option[random.randrange(0, len(list_option))]
+
+        # Update the cell in the Sudoku board
         sudoku_board[row][col] = random_val
+
+        # Remove the selected cell from the list of available options
         all_cells_options.pop(k)
-
-
 
 
 '''
@@ -527,7 +559,6 @@ interesting_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
                      [-1, -1, -1, -1, 1, 9, 6, 3, 5],
                      [-1, -1, -1, -1, 8, 6, 1, 7, 9]]
 
-
 '''
 This function checks if the Sudoku board has a valid basic structure.  
 The board should have 9 rows, each containing 9 integer (between -1 and 9).
@@ -557,9 +588,19 @@ def basic_sudoku_structure_check(sudoku_board: list) -> bool:
     # If you get here, that means the board structure is valid
     return True
 
+
 empty_list = []
 for i in range(9):
-    empty_list.append([-1]*9)
+    empty_list.append([-1] * 9)
 
-create_random_board(empty_list)
-print_board(empty_list)
+# create_random_board(empty_list)
+# print_board(empty_list)
+
+fill_board(board1, possible_digits(board1))
+
+# print(one_stage(impossible_board,possible_digits(impossible_board)))
+# print(one_stage(bug_board,possible_digits(bug_board)))
+# print(is_legal_board(impossible_board))
+# print(is_legal_board(bug_board))
+# print(is_legal_possibilities(possible_digits(impossible_board)))
+# print(is_legal_possibilities(possible_digits(bug_board)))
