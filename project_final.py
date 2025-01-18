@@ -5,26 +5,6 @@ NOT_FINISH = 0
 FINISH_SUCCESS = 1
 HORIZONTAL_LEN = 28
 
-board1 = [[5, -1, 4, -1, 7, -1, -1, 1, -1],
-          [6, -1, 2, 1, -1, -1, 3, -1, -1],
-          [1, -1, 8, -1, 4, -1, -1, 6, -1],
-          [-1, 5, -1, -1, 6, -1, -1, 2, -1],
-          [-1, 2, -1, 8, -1, 3, -1, -1, -1],
-          [-1, -1, -1, -1, -1, 4, -1, 5, 6],
-          [-1, 6, 1, 5, 3, 7, 2, 8, 4],
-          [-1, 8, 7, -1, 1, 9, -1, 3, -1],
-          [-1, -1, -1, 2, 8, -1, -1, -1, 9]]
-
-board2 = [[-1, 6, -1, 4, 3, -1, -1, -1, 1],
-          [5, -1, -1, -1, 7, -1, -1, -1, -1],
-          [-1, 1, -1, 9, -1, -1, 8, -1, -1],
-          [-1, -1, -1, -1, -1, 2, 3, -1, 9],
-          [-1, 8, -1, -1, -1, -1, -1, 6, -1],
-          [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-          [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-          [9, -1, 2, 3, -1, -1, -1, -1, 4],
-          [-1, -1, 4, 7, 2, -1, -1, -1, 8]]
-
 '''
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃                        Section 1                         ┃
@@ -136,27 +116,7 @@ where each cell contains a list of possible numbers that can be placed in that c
 '''
 
 
-
-
-example_board = [[5, 3, -1, -1, 7, -1, -1, -1, -1],
-                 [6, -1, -1, -1, -1, -1, 1, -1, -1],
-                 [-1, -1, 9, -1, -1, -1, -1, 6, -1],
-                 [-1, -1, -1, -1, 6, -1, -1, -1, 3],
-                 [-1, -1, -1, 8, -1, 3, -1, -1, 1],
-                 [-1, -1, -1, -1, -1, -1, -1, -1, -1],
-                 [-1, 6, -1, -1, -1, -1, -1, -1, -1],
-                 [-1, -1, -1, -1, 1, -1, -1, -1, -1],
-                 [-1, -1, -1, -1, 8, -1, -1, -1, 9]]
-
-
-
-
-
-
-
-
 def possible_digits(sudoku_board: list) -> list:
-
     # Creating Sudoku Board
     possible_board = []
     for i in range(9):
@@ -168,6 +128,7 @@ def possible_digits(sudoku_board: list) -> list:
 
     # Return the possible_board
     return possible_board
+
 
 '''
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -381,10 +342,10 @@ def ask_for_input(options_to_choose_from: list) -> int:
             if user_choice in options_to_choose_from:
                 break
             else:
-                print("Sorry, the number isn't from the list above. Let's try again.")
+                print("Sorry, the number isn't from the list above. Please try again.")
         except:
             # Handle invalid inputs (like letters or symbols)
-            print("Hi! This is invalid input. You need to enter a **number**!")
+            print("Hi! This is invalid input! Please enter a number from the list above.")
 
     # If we get here, that means the user entered a valid number from the list
     return user_choice
@@ -450,7 +411,8 @@ def create_random_board(sudoku_board: list) -> None:
             all_cells_options.append((i, j))
 
     # Fill the randomly chosen cells
-    for i in range(num_random_cells):
+    i = 0
+    while i < num_random_cells:
 
         # Choose a random cell from the available options
         k = random.randrange(0, len(all_cells_options))
@@ -461,8 +423,7 @@ def create_random_board(sudoku_board: list) -> None:
 
         # Edge case: if the cell has no options at all ...
         if list_option == None:
-            i -= 1  # we will try another cell
-            continue
+            continue  # ... we will try another cell
 
         # Select a random value from the valid options
         random_val = list_option[random.randrange(0, len(list_option))]
@@ -473,6 +434,8 @@ def create_random_board(sudoku_board: list) -> None:
         # Remove the selected cell from the list of available options
         all_cells_options.pop(k)
 
+        i += 1
+
 
 '''
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -480,35 +443,45 @@ def create_random_board(sudoku_board: list) -> None:
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 '''
 '''
-This function print a 9x9 Sudoku board.
-Empty cells (represented by -1) will be displayed as blank spaces.
+This function print a 9x9 Sudoku board. Empty cells (represented by -1) 
+will be displayed as blank spaces. This function return long string that 
+contains all the characters we need to print the board.
 '''
 
 
-def print_board(sudoku_board: list) -> None:
+def print_board(sudoku_board: list) -> str:
+    # String that contains all the characters to print the board
+    board_str = ""
+
     # Loop through each row of the board
     for i in range(9):
 
-        # Print a horizontal divider line between rows
-        print("-" * HORIZONTAL_LEN)
+        # Add a horizontal divider line between rows
+        board_str += "-" * HORIZONTAL_LEN + "\n"
 
         # Start each row with a vertical line
-        print("|", end="")
+        board_str += "|"
 
         # Loop through each column in the current row
         for j in range(9):
 
-            # Print the cell value (replacing -1 with a blank space)
+            # Add the cell value (replacing -1 with a blank space)
             if sudoku_board[i][j] != -1:
-                print(sudoku_board[i][j], "|", end="")
+                board_str += " " + str(sudoku_board[i][j]) + "|"
             else:
-                print("  |", end="")
+                board_str += "  |"
 
         # Move to the next line after finishing the row
-        print("")
+        board_str += "\n"
 
-    # Print the bottom horizontal divider line after the last row
-    print("-" * HORIZONTAL_LEN)
+    # Add the bottom horizontal divider line after the last row
+    board_str += "-" * HORIZONTAL_LEN + "\n"
+
+    # Print the result
+    print(board_str)
+
+    # Return the string
+    return board_str
 
 
 '''
@@ -518,13 +491,13 @@ def print_board(sudoku_board: list) -> None:
 '''
 
 
-def print_board_to_file(sudoku_board, file_name):
+def print_board_to_file(sudoku_board: list, file_name: str) -> None:
     pass
 
 
 '''
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃                           MAIN                           ┃
+┃                        All boards                        ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 '''
 example_board = [[5, 3, -1, -1, 7, -1, -1, -1, -1],
@@ -577,6 +550,12 @@ interesting_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
                      [-1, -1, -1, -1, 1, 9, 6, 3, 5],
                      [-1, -1, -1, -1, 8, 6, 1, 7, 9]]
 
+
+'''
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                           MAIN                           ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+'''
 '''
 This function checks if the Sudoku board has a valid basic structure.  
 The board should have 9 rows, each containing 9 integer (-1 or 1-9).
@@ -585,43 +564,53 @@ The function will return true or false depending on the validity check.
 we will use "is_legal_board" and "is_legal_possibilities" functions. <<
 '''
 
-def basic_sudoku_structure_check(sudoku_board: list) -> bool:
-    # Check if the list contains 9 sub-lists
-    if len(sudoku_board) != 9:
-        return False
 
-    # Check if each of the 9 sub-lists contains 9 values
-    for row in range(9):
-        if len(sudoku_board[row]) != 9:
+def basic_sudoku_structure_check(sudoku_board: list) -> bool:
+    try:
+        # Check if the list contains 9 sub-lists
+        if len(sudoku_board) != 9:
             return False
 
-    # Check if each value is a number is -1 or 1-9
-    for row in range(9):
-        for col in range(9):
-            cell_value = sudoku_board[row][col]
-
-            if not str(cell_value).isdigit():
+        # Check if each of the 9 sub-lists contains 9 values
+        for row in range(9):
+            if len(sudoku_board[row]) != 9:
                 return False
 
-            if not(cell_value in range(1, 10) or cell_value == -1):
-                return False
+        # For each of cells
+        for row in range(9):
+            for col in range(9):
+                cell_value = sudoku_board[row][col]
 
-    # If you get here, that means the board structure is valid
+                # Try converting to a number
+                int(cell_value)
+
+                # Check if each value is a number is -1 or 1-9
+                if not (cell_value in range(1, 10) or cell_value == -1):
+                    return False
+
+    # If we failed in one of the previous attempts (got a number that
+    # can't do len() on or you got a string that can't be converted to int)
+    # then obviously the board is illegal, so we will return false
+    except:
+        return False
+
+    # If you get here, that means the board structure is legal
     return True
 
 
-empty_list = []
+
+random_list = []
 for i in range(9):
-    empty_list.append([-1] * 9)
+    random_list.append([-1] * 9)
 
-# create_random_board(empty_list)
-# print_board(empty_list)
+create_random_board(random_list)
 
-fill_board(board1, possible_digits(board1))
-
-# print(one_stage(impossible_board,possible_digits(impossible_board)))
-# print(one_stage(bug_board,possible_digits(bug_board)))
-# print(is_legal_board(impossible_board))
-# print(is_legal_board(bug_board))
-# print(is_legal_possibilities(possible_digits(impossible_board)))
-# print(is_legal_possibilities(possible_digits(bug_board)))
+# ┌──────────────────────────────────────────────────┐
+# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
+# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
+# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
+# │!!!!!!!!!!!!!!!!!!!!yalalalala!!!!!!!!!!!!!!!!!!!!│
+# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
+# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
+# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
+# └──────────────────────────────────────────────────┘
