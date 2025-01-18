@@ -36,10 +36,9 @@ If the number is different from -1, we add it to the list.
 '''
 
 
-def add_to_list(num: int, lst: list) -> list:
+def add_to_list(num: int, lst: list) -> None:
     if num != -1:
         lst.append(num)
-    return lst
 
 
 '''
@@ -109,13 +108,14 @@ def options(sudoko_board: list, loc: tuple):
     # Get the row and column from the tuple "loc"
     row, col = loc
 
-    # Edge case: the spot already has a number
+    # Edge case: the cell already has a number
     if sudoko_board[row][col] != -1:
         return []
 
     # Create a list of valid numbers for the given Sudoku cell
-    cur_set = set(get_numbers_in_region(sudoko_board, row, col))
-    option_lst = list({i for i in range(1, 10)}.difference(cur_set))
+    numbers_in_region = get_numbers_in_region(sudoko_board, row, col)
+    all_numbers = {i for i in range(1, 10)}
+    option_lst = list(all_numbers.difference(set(numbers_in_region)))
 
     # If there are no numbers left in the list, return None
     if option_lst == []:
@@ -136,23 +136,38 @@ where each cell contains a list of possible numbers that can be placed in that c
 '''
 
 
+
+
+example_board = [[5, 3, -1, -1, 7, -1, -1, -1, -1],
+                 [6, -1, -1, -1, -1, -1, 1, -1, -1],
+                 [-1, -1, 9, -1, -1, -1, -1, 6, -1],
+                 [-1, -1, -1, -1, 6, -1, -1, -1, 3],
+                 [-1, -1, -1, 8, -1, 3, -1, -1, 1],
+                 [-1, -1, -1, -1, -1, -1, -1, -1, -1],
+                 [-1, 6, -1, -1, -1, -1, -1, -1, -1],
+                 [-1, -1, -1, -1, 1, -1, -1, -1, -1],
+                 [-1, -1, -1, -1, 8, -1, -1, -1, 9]]
+
+
+
+
+
+
+
+
 def possible_digits(sudoku_board: list) -> list:
-    # Creating an Empty Sudoku Board
+
+    # Creating Sudoku Board
     possible_board = []
     for i in range(9):
         row = []
+        # For each cell, we will use a function from Section 1.
         for j in range(9):
-            row.append([])
+            row.append(options(sudoku_board, (i, j)))
         possible_board.append(row)
 
-    # For each cell in the empty board, we will use a function from Section 1.
-    for i in range(9):
-        for j in range(9):
-            possible_board[i][j] = options(sudoku_board, (i, j))
-
-    # Return the
+    # Return the possible_board
     return possible_board
-
 
 '''
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -244,9 +259,9 @@ def fill_cells_with_single_option(sudoku_board: list, possibilities: list) -> li
 
 '''
 This function checks whether the Sudoku board is fully solved.
-It determines if all cells in the `possibilities` list are empty, 
-indicating that no further possibilities are available, meaning the board is complete.
->> WARNING: The function assumes that the borad is legal! <<
+It checks whether all cells in the `possibilities` list are empty, 
+which indicates that no further moves are possible and the board is complete.
+>> WARNING: The function assumes that possibilities borad is legal! <<
 '''
 
 
@@ -264,6 +279,7 @@ def is_finish_board(possibilities: list) -> bool:
 '''
 This function finds the cell with the fewest possible (excluding cells with 0 options). 
 The function returns the tuple of the row and column of the above cell
+>> WARNING: The function assumes that possibilities borad is legal! <<
 '''
 
 
@@ -383,20 +399,16 @@ The function returns either FINISH_SUCCESS or FINISH_FAILURE based on the outcom
 '''
 
 
-def fill_board(sudoku_board: list, possibilities: list):
+def fill_board(sudoku_board: list, possibilities: list) -> int:
     # Continuously try to fill the board
     while True:
 
         # Call one_stage to perform a step in solving the Sudoku
         status, (x, y) = one_stage(sudoku_board, possibilities)
 
-        # If the status indicates a failure to finish, return FINISH_FAILURE
-        if status == FINISH_FAILURE:
-            return FINISH_FAILURE
-
-        # If the status indicates success, return FINISH_SUCCESS
-        if status == FINISH_SUCCESS:
-            return FINISH_SUCCESS
+        # If the status indicates failure or success, return status
+        if status == FINISH_FAILURE or status == FINISH_SUCCESS:
+            return status
 
         # If you get here, that means the board is legal and we can still play
 
@@ -406,7 +418,7 @@ def fill_board(sudoku_board: list, possibilities: list):
         # Display the available options for the user to choose from
         print_the_potions(options_to_choose_from, x, y)
 
-        # And ask the user to choose a number from the list of options , ask for input it is for make sure that the number from the user is valid
+        # Ask the user to choose a valid number from the options
         user_choice = ask_for_input(options_to_choose_from)
 
         # Update the Sudoku and possibilities bord the with the chosen number
@@ -439,12 +451,18 @@ def create_random_board(sudoku_board: list) -> None:
 
     # Fill the randomly chosen cells
     for i in range(num_random_cells):
+
         # Choose a random cell from the available options
         k = random.randrange(0, len(all_cells_options))
         row, col = all_cells_options[k]
 
         # Get the list of valid options for the chosen cell
         list_option = options(sudoku_board, (row, col))
+
+        # Edge case: if the cell has no options at all ...
+        if list_option == None:
+            i -= 1  # we will try another cell
+            continue
 
         # Select a random value from the valid options
         random_val = list_option[random.randrange(0, len(list_option))]
@@ -561,12 +579,11 @@ interesting_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
 
 '''
 This function checks if the Sudoku board has a valid basic structure.  
-The board should have 9 rows, each containing 9 integer (between -1 and 9).
+The board should have 9 rows, each containing 9 integer (-1 or 1-9).
 The function will return true or false depending on the validity check.
->> WARNING: This is only a basic format check! <<
-For full validation of Sudoku rules, we will use "is_legal_board" function.  
+>> WARNING: This is only a basic format check! For full validation,
+we will use "is_legal_board" and "is_legal_possibilities" functions. <<
 '''
-
 
 def basic_sudoku_structure_check(sudoku_board: list) -> bool:
     # Check if the list contains 9 sub-lists
@@ -578,11 +595,15 @@ def basic_sudoku_structure_check(sudoku_board: list) -> bool:
         if len(sudoku_board[row]) != 9:
             return False
 
-    # Check if each value is a number between -1 and 9
+    # Check if each value is a number is -1 or 1-9
     for row in range(9):
         for col in range(9):
-            cell_value = str(sudoku_board[row][col])
-            if not cell_value.isdigit() and cell_value != "-1":
+            cell_value = sudoku_board[row][col]
+
+            if not str(cell_value).isdigit():
+                return False
+
+            if not(cell_value in range(1, 10) or cell_value == -1):
                 return False
 
     # If you get here, that means the board structure is valid
