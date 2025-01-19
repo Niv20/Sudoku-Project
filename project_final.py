@@ -397,10 +397,12 @@ def fill_board(sudoku_board: list, possibilities: list) -> int:
 This function fills a Sudoku board with random values.  
 It randomly picks between 10 and 20 cells and gives each one a valid number  
 that fits the Sudoku rules. The function changes the board directly.
+If in the middle of the process we get stuck (we'll get a cell that has no options) 
+we'll return FINISH_FAILURE, Otherwise we return None.
 '''
 
 
-def create_random_board(sudoku_board: list) -> None:
+def create_random_board(sudoku_board: list):
     # Determine a random number of cells to fill (between 10 and 20)
     num_random_cells = random.randrange(10, 21)
 
@@ -411,8 +413,7 @@ def create_random_board(sudoku_board: list) -> None:
             all_cells_options.append((i, j))
 
     # Fill the randomly chosen cells
-    i = 0
-    while i < num_random_cells:
+    for i in range(num_random_cells):
 
         # Choose a random cell from the available options
         k = random.randrange(0, len(all_cells_options))
@@ -421,9 +422,9 @@ def create_random_board(sudoku_board: list) -> None:
         # Get the list of valid options for the chosen cell
         list_option = options(sudoku_board, (row, col))
 
-        # Edge case: if the cell has no options at all ...
+        # Edge case: the cell has no options at all
         if list_option == None:
-            continue  # ... we will try another cell
+            return FINISH_FAILURE
 
         # Select a random value from the valid options
         random_val = list_option[random.randrange(0, len(list_option))]
@@ -433,8 +434,6 @@ def create_random_board(sudoku_board: list) -> None:
 
         # Remove the selected cell from the list of available options
         all_cells_options.pop(k)
-
-        i += 1
 
 
 '''
@@ -495,11 +494,23 @@ def print_board_to_file(sudoku_board: list, file_name: str) -> None:
     pass
 
 
+# ┌──────────────────────────────────────────────────┐
+# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
+# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
+# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
+# │!!!!!!!!!!!!!!!!!!!!yalalalala!!!!!!!!!!!!!!!!!!!!│
+# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
+# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
+# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
+# └──────────────────────────────────────────────────┘
+
 '''
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃                        All boards                        ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 '''
+
+# First board (example_board)
 example_board = [[5, 3, -1, -1, 7, -1, -1, -1, -1],
                  [6, -1, -1, -1, -1, -1, 1, -1, -1],
                  [-1, -1, 9, -1, -1, -1, -1, 6, -1],
@@ -510,6 +521,7 @@ example_board = [[5, 3, -1, -1, 7, -1, -1, -1, -1],
                  [-1, -1, -1, -1, 1, -1, -1, -1, -1],
                  [-1, -1, -1, -1, 8, -1, -1, -1, 9]]
 
+# Second board (perfect_board) is a fully legal board
 perfect_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
                  [6, 7, 2, 1, 9, 5, 3, 4, 8],
                  [1, 9, 8, 3, 4, 2, 5, 6, 7],
@@ -520,6 +532,7 @@ perfect_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
                  [2, 8, 7, 4, 1, 9, 6, 3, 5],
                  [3, 4, 5, 2, 8, 6, 1, 7, 9]]
 
+# Third board (impossible_board) is an unsolvable board
 impossible_board = [[5, 1, 6, 8, 4, 9, 7, 3, 2],
                     [3, -1, 7, 6, -1, 5, -1, -1, -1],
                     [8, -1, 9, 7, -1, -1, -1, 6, 5],
@@ -530,6 +543,7 @@ impossible_board = [[5, 1, 6, 8, 4, 9, 7, 3, 2],
                     [6, 8, 4, 2, -1, 7, 5, -1, -1],
                     [7, 9, 1, -1, 5, -1, 6, -1, 8]]
 
+# fourth board (bug_board) is a board with duplicates
 bug_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
              [6, 7, 2, 1, 9, 5, 3, 4, 9],
              [1, 9, 8, 3, 4, 2, 5, 6, 7],
@@ -540,6 +554,7 @@ bug_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
              [2, 8, 7, 4, 1, 9, 6, 3, 5],
              [3, 4, 5, 2, 8, 6, 1, 7, 9]]
 
+# Fifth board (interesting_board), is a solvable with a few steps
 interesting_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
                      [6, 7, 2, 1, 9, 5, 3, 4, 8],
                      [1, 9, 8, 3, 4, 2, 5, 6, 7],
@@ -550,6 +565,11 @@ interesting_board = [[5, 3, 4, 6, 7, 8, 9, 1, 2],
                      [-1, -1, -1, -1, 1, 9, 6, 3, 5],
                      [-1, -1, -1, -1, 8, 6, 1, 7, 9]]
 
+# Sixth board (random_board) is a random board using section 5
+random_board = []
+for i in range(9):
+    random_board.append([-1] * 9)
+status_random_board = create_random_board(random_board)
 
 '''
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -596,14 +616,6 @@ def basic_sudoku_structure_check(sudoku_board: list) -> bool:
 
     # If you get here, that means the board structure is legal
     return True
-
-
-
-random_list = []
-for i in range(9):
-    random_list.append([-1] * 9)
-
-create_random_board(random_list)
 
 # ┌──────────────────────────────────────────────────┐
 # │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
