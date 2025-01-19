@@ -11,7 +11,7 @@ HORIZONTAL_LEN = 28
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 '''
 '''
-This function recive a number and a list. 
+This function receive a number and a list. 
 If the number is different from -1, we add it to the list.
 '''
 
@@ -178,13 +178,13 @@ def is_legal_board(sudoku_board: list) -> bool:
 
 '''
 This function checks whether a given possibilities board is legal or not.
-A possibilities board is considered illegal if he contian any "None" values.
+A possibilities board is considered illegal if he contain any "None" values.
 The function returns False if "None" is found and True otherwise.
 '''
 
 
 def is_legal_possibilities(possibilities: list) -> bool:
-    # Check if there is "None" in possibilities borad
+    # Check if there is "None" in possibilities board
     for row in range(9):
         for col in range(9):
             if possibilities[row][col] == None:
@@ -222,7 +222,7 @@ def fill_cells_with_single_option(sudoku_board: list, possibilities: list) -> li
 This function checks whether the Sudoku board is fully solved.
 It checks whether all cells in the `possibilities` list are empty, 
 which indicates that no further moves are possible and the board is complete.
->> WARNING: The function assumes that possibilities borad is legal! <<
+>> WARNING: The function assumes that possibilities board is legal! <<
 '''
 
 
@@ -240,7 +240,7 @@ def is_finish_board(possibilities: list) -> bool:
 '''
 This function finds the cell with the fewest possible (excluding cells with 0 options). 
 The function returns the tuple of the row and column of the above cell
->> WARNING: The function assumes that possibilities borad is legal! <<
+>> WARNING: The function assumes that possibilities board is legal! <<
 '''
 
 
@@ -286,7 +286,7 @@ def one_stage(sudoku_board: list, possibilities: list) -> tuple:
     # 1. Fill cells with a single possible value and update possibilities
     possibilities = fill_cells_with_single_option(sudoku_board, possibilities)
 
-    # 2. Check if the sudoku board and the possibilities borad are legal
+    # 2. Check if the sudoku board and the possibilities board are legal
     if not is_legal_board(sudoku_board) or not is_legal_possibilities(possibilities):
         return FINISH_FAILURE, (-1, -1)
 
@@ -294,7 +294,7 @@ def one_stage(sudoku_board: list, possibilities: list) -> tuple:
     if is_finish_board(possibilities):
         return FINISH_SUCCESS, (-1, -1)
 
-    # 3b. If the board isn't finished, find the cell with fewest options
+    # 3b. If the board isn't finished, find the cell with the fewest options
     return NOT_FINISH, find_cell_with_fewest_options(possibilities)
 
 
@@ -490,19 +490,9 @@ def print_board(sudoku_board: list) -> str:
 '''
 
 
-def print_board_to_file(sudoku_board: list, file_name: str) -> None:
-    pass
+def print_board_to_file(sudoku_board: list, file) -> None:
+    file.write(print_board(sudoku_board))
 
-
-# ┌──────────────────────────────────────────────────┐
-# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
-# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
-# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
-# │!!!!!!!!!!!!!!!!!!!!yalalalala!!!!!!!!!!!!!!!!!!!!│
-# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
-# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
-# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
-# └──────────────────────────────────────────────────┘
 
 '''
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -617,12 +607,39 @@ def basic_sudoku_structure_check(sudoku_board: list) -> bool:
     # If you get here, that means the board structure is legal
     return True
 
-# ┌──────────────────────────────────────────────────┐
-# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
-# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
-# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
-# │!!!!!!!!!!!!!!!!!!!!yalalalala!!!!!!!!!!!!!!!!!!!!│
-# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
-# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
-# │!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!│
-# └──────────────────────────────────────────────────┘
+new_file = open("solved_sudoku.txt","w")
+
+board_list = [example_board,perfect_board,impossible_board,bug_board,interesting_board,random_board]
+
+board_name = ["example_board","perfect_board","impossible_board","bug_board","interesting_board","random_board"]
+i = 0
+for board in board_list:
+    
+    print("Board number ", i+1, ": ", board_name[i], sep="")
+    print(print_board(board))
+    
+    new_file.write(board_name[i] + "\n")
+    
+    cur_status = fill_board(board, possible_digits(board))
+    
+    if not is_legal_board(board) or not basic_sudoku_structure_check(board):
+        print("This board not legit!")
+        new_file.write("Board is not legit!\n")
+
+    elif board == random_board and status_random_board == FINISH_FAILURE:
+        print("This board not legit!")
+        new_file.write("Board is not legit!\n")
+
+    elif cur_status == FINISH_FAILURE:
+        print("This board is unsolvable")
+        new_file.write("Board is unsolvable\n")
+    else:
+        print("Yessss! You managed yo sovle the sudoko")
+        new_file.write("Here is the solved board\n")
+        print_board_to_file(board ,new_file)
+
+    print("=" * HORIZONTAL_LEN)
+    
+    i += 1
+    
+new_file.close()
