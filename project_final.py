@@ -614,14 +614,14 @@ board_list = [example_board,perfect_board,impossible_board,bug_board,interesting
 board_name = ["example_board","perfect_board","impossible_board","bug_board","interesting_board","random_board"]
 i = 0
 for board in board_list:
-    
+
     print("Board number ", i+1, ": ", board_name[i], sep="")
-    print(print_board(board))
-    
+    print_board(board)
+
     new_file.write(board_name[i] + "\n")
-    
+
     cur_status = fill_board(board, possible_digits(board))
-    
+
     if not is_legal_board(board) or not basic_sudoku_structure_check(board):
         print("This board not legit!")
         new_file.write("Board is not legit!\n")
@@ -638,8 +638,9 @@ for board in board_list:
         new_file.write("Here is the solved board\n")
         print_board_to_file(board ,new_file)
 
+    new_file.write("=" * HORIZONTAL_LEN + "\n")
     print("=" * HORIZONTAL_LEN)
-    
+
     i += 1
-    
+
 new_file.close()
